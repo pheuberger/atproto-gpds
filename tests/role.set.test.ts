@@ -51,8 +51,7 @@ describe('role.set — last-owner protection', () => {
     const { status, body } = await roleSet(url, 'did:plc:testuser', 'member')
 
     expect(status).toBe(400)
-    // XRPCError payload: { error: <third arg>, message: <second arg (error code)> }
-    expect(body.message).toBe('LastOwnerDemotion')
+    expect(body.error).toBe('LastOwnerDemotion')
   })
 
   it('promotes a non-owner member without the last-owner check', async () => {
@@ -68,14 +67,14 @@ describe('role.set — last-owner protection', () => {
     const { status, body } = await roleSet(url, 'did:plc:nobody', 'member')
 
     expect(status).toBe(404)
-    expect(body.message).toBe('MemberNotFound')
+    expect(body.error).toBe('MemberNotFound')
   })
 
   it('rejects invalid role with InvalidRole', async () => {
     const { status, body } = await roleSet(url, 'did:plc:testuser', 'superadmin')
 
     expect(status).toBe(400)
-    expect(body.message).toBe('InvalidRole')
+    expect(body.error).toBe('InvalidRole')
   })
 
   // ---------------------------------------------------------------------------
@@ -114,7 +113,7 @@ describe('role.set — last-owner protection', () => {
     // Only testuser remains as owner — demoting them must fail
     const r2 = await roleSet(url, 'did:plc:testuser', 'member')
     expect(r2.status).toBe(400)
-    expect(r2.body.message).toBe('LastOwnerDemotion')
+    expect(r2.body.error).toBe('LastOwnerDemotion')
 
     const owners = await groupDb
       .selectFrom('group_members')
@@ -153,8 +152,8 @@ describe('role.set — transaction atomicity (direct DB)', () => {
         .select(trx.fn.countAll().as('count'))
         .executeTakeFirstOrThrow()
       if (Number(ownerCount.count) <= 1) {
-        throw new XRPCError(400, 'LastOwnerDemotion',
-          'Cannot demote the last owner — promote a replacement first')
+        throw new XRPCError(400,
+          'Cannot demote the last owner — promote a replacement first', 'LastOwnerDemotion')
       }
       await trx
         .updateTable('group_members')
@@ -175,7 +174,7 @@ describe('role.set — transaction atomicity (direct DB)', () => {
 
     expect(fulfilled).toHaveLength(1)
     expect(rejected).toHaveLength(1)
-    expect(rejected[0].reason.errorMessage).toBe('LastOwnerDemotion')
+    expect(rejected[0].reason.customErrorName).toBe('LastOwnerDemotion')
 
     const owners = await groupDb
       .selectFrom('group_members')
@@ -194,7 +193,7 @@ describe('role.set — transaction atomicity (direct DB)', () => {
       .execute()
 
     await expect(atomicDemote('did:plc:owner1', 'member')).rejects.toMatchObject({
-      errorMessage: 'LastOwnerDemotion',
+      customErrorName: 'LastOwnerDemotion',
     })
   })
 })

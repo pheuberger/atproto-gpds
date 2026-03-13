@@ -13,7 +13,7 @@ export default function (app: Express, ctx: AppContext) {
     // Validate inputs before any async work
     ensureValidDid(memberDid)
     if (!(role in ROLE_HIERARCHY)) {
-      throw new XRPCError(400, 'InvalidRole', `Role must be one of: ${Object.keys(ROLE_HIERARCHY).join(', ')}`)
+      throw new XRPCError(400, `Role must be one of: ${Object.keys(ROLE_HIERARCHY).join(', ')}`, 'InvalidRole')
     }
 
     const groupDb = ctx.groupDbs.get(groupDid)
@@ -29,7 +29,7 @@ export default function (app: Express, ctx: AppContext) {
     ])
 
     if (existing) {
-      throw new XRPCError(409, 'MemberAlreadyExists', 'Member already exists')
+      throw new XRPCError(409, 'Member already exists', 'MemberAlreadyExists')
     }
 
     // Cannot assign equal or higher role

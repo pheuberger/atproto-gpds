@@ -19,7 +19,7 @@ export default function (app: Express, ctx: AppContext) {
     // Check Content-Length upfront (fast reject)
     const contentLength = parseInt(req.headers['content-length'] ?? '0', 10)
     if (contentLength > ctx.config.maxBlobSize) {
-      throw new XRPCError(400, 'BlobTooLarge', 'Blob exceeds size limit')
+      throw new XRPCError(400, 'Blob exceeds size limit', 'BlobTooLarge')
     }
 
     // Buffer the blob with mid-stream size enforcement
@@ -30,7 +30,7 @@ export default function (app: Express, ctx: AppContext) {
       totalSize += chunk.length
       if (totalSize > ctx.config.maxBlobSize) {
         req.destroy()
-        throw new XRPCError(400, 'BlobTooLarge', 'Blob exceeds size limit')
+        throw new XRPCError(400, 'Blob exceeds size limit', 'BlobTooLarge')
       }
     }
     const blobData = Buffer.concat(chunks)

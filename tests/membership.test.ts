@@ -64,7 +64,7 @@ describe('member.add', () => {
       .post('/xrpc/app.certified.group.member.add')
       .send({ memberDid: 'did:plc:existing', role: 'member' })
     expect(res.status).toBe(409)
-    expect(res.body.message).toBe('MemberAlreadyExists')
+    expect(res.body.error).toBe('MemberAlreadyExists')
   })
 
   it('member cannot add anyone (RBAC 403)', async () => {
@@ -110,7 +110,7 @@ describe('member.remove', () => {
       .post('/xrpc/app.certified.group.member.remove')
       .send({ memberDid: 'did:plc:owner1' })
     expect(res.status).toBe(400)
-    expect(res.body.message).toBe('CannotRemoveOwner')
+    expect(res.body.error).toBe('CannotRemoveOwner')
   })
 
   it('self-removal succeeds', async () => {
@@ -205,7 +205,7 @@ describe('role.set', () => {
       .post('/xrpc/app.certified.group.role.set')
       .send({ memberDid: 'did:plc:testuser', role: 'admin' })
     expect(res.status).toBe(400)
-    expect(res.body.message).toBe('LastOwnerDemotion')
+    expect(res.body.error).toBe('LastOwnerDemotion')
   })
 
   it('allows owner demotion when another owner exists', async () => {

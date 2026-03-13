@@ -24,7 +24,7 @@ export default function (app: Express, ctx: AppContext) {
     if (cursor) {
       const decoded = Buffer.from(cursor, 'base64').toString('utf8')
       const [cursorTs, cursorDid] = decoded.split('::')
-      if (!cursorTs || !cursorDid) throw new XRPCError(400, 'InvalidCursor', 'Invalid cursor')
+      if (!cursorTs || !cursorDid) throw new XRPCError(400, 'Invalid cursor', 'InvalidCursor')
       query = query.where((eb) =>
         eb.or([
           eb('added_at', '>', cursorTs),

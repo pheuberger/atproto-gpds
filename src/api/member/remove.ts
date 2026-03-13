@@ -25,13 +25,13 @@ export default function (app: Express, ctx: AppContext) {
 
     if (!target) {
       if (callerDid === memberDid) {
-        throw new XRPCError(401, 'Unauthorized', 'Not a member of this group')
+        throw new XRPCError(401, 'Not a member of this group', 'Unauthorized')
       }
-      throw new XRPCError(404, 'MemberNotFound', 'Member not found')
+      throw new XRPCError(404, 'Member not found', 'MemberNotFound')
     }
 
     if (target.role === 'owner') {
-      throw new XRPCError(400, 'CannotRemoveOwner', 'Cannot remove an owner — demote first')
+      throw new XRPCError(400, 'Cannot remove an owner — demote first', 'CannotRemoveOwner')
     }
 
     // Cannot remove a member with equal or higher role (non-self removal only)

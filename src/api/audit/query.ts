@@ -36,7 +36,7 @@ export default function (app: Express, ctx: AppContext) {
     // Cursor: decode base64 → id string, WHERE id < cursor
     if (cursor) {
       const cursorId = parseInt(Buffer.from(cursor, 'base64').toString('utf8'), 10)
-      if (isNaN(cursorId)) throw new XRPCError(400, 'InvalidCursor', 'Invalid cursor')
+      if (isNaN(cursorId)) throw new XRPCError(400, 'Invalid cursor', 'InvalidCursor')
       query = query.where('id', '<', cursorId)
     }
 

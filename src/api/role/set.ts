@@ -10,7 +10,7 @@ export default function (app: Express, ctx: AppContext) {
     const { memberDid, role: newRole } = req.body
 
     if (!(newRole in ROLE_HIERARCHY)) {
-      throw new XRPCError(400, 'InvalidRole', `Role must be one of: ${Object.keys(ROLE_HIERARCHY).join(', ')}`)
+      throw new XRPCError(400, `Role must be one of: ${Object.keys(ROLE_HIERARCHY).join(', ')}`, 'InvalidRole')
     }
 
     const groupDb = ctx.groupDbs.get(groupDid)
@@ -25,7 +25,7 @@ export default function (app: Express, ctx: AppContext) {
         .executeTakeFirst(),
     ])
     if (!target) {
-      throw new XRPCError(404, 'MemberNotFound', 'Member not found')
+      throw new XRPCError(404, 'Member not found', 'MemberNotFound')
     }
 
     // Cannot promote above own role
@@ -44,8 +44,8 @@ export default function (app: Express, ctx: AppContext) {
           .select(trx.fn.countAll().as('count'))
           .executeTakeFirstOrThrow()
         if (Number(ownerCount.count) <= 1) {
-          throw new XRPCError(400, 'LastOwnerDemotion',
-            'Cannot demote the last owner — promote a replacement first')
+          throw new XRPCError(400,
+            'Cannot demote the last owner — promote a replacement first', 'LastOwnerDemotion')
         }
       }
       await trx.updateTable('group_members')

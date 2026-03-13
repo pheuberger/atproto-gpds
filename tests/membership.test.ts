@@ -43,7 +43,7 @@ describe('member.add', () => {
 
   it('admin adds a member', async () => {
     const res = await request(app)
-      .post('/xrpc/org.groupds.member.add')
+      .post('/xrpc/app.certified.group.member.add')
       .send({ memberDid: 'did:plc:newuser', role: 'member' })
     expect(res.status).toBe(200)
     expect(res.body.memberDid).toBe('did:plc:newuser')
@@ -53,7 +53,7 @@ describe('member.add', () => {
 
   it('admin cannot add another admin (role >= own)', async () => {
     const res = await request(app)
-      .post('/xrpc/org.groupds.member.add')
+      .post('/xrpc/app.certified.group.member.add')
       .send({ memberDid: 'did:plc:newuser', role: 'admin' })
     expect(res.status).toBe(403)
   })
@@ -61,7 +61,7 @@ describe('member.add', () => {
   it('duplicate member returns 409', async () => {
     await seedMember(groupDb, 'did:plc:existing', 'member')
     const res = await request(app)
-      .post('/xrpc/org.groupds.member.add')
+      .post('/xrpc/app.certified.group.member.add')
       .send({ memberDid: 'did:plc:existing', role: 'member' })
     expect(res.status).toBe(409)
     expect(res.body.message).toBe('MemberAlreadyExists')
@@ -71,7 +71,7 @@ describe('member.add', () => {
     await seedMember(groupDb, 'did:plc:member1', 'member')
     app = createApp({ ...ctx, authVerifier: { verify: async () => ({ iss: 'did:plc:member1', aud: 'did:plc:testgroup' }) } as any })
     const res = await request(app)
-      .post('/xrpc/org.groupds.member.add')
+      .post('/xrpc/app.certified.group.member.add')
       .send({ memberDid: 'did:plc:newuser', role: 'member' })
     expect(res.status).toBe(403)
   })

@@ -7,7 +7,7 @@ import { ForbiddenError } from '../../errors.js'
 import { ROLE_HIERARCHY, type Role } from '../../rbac/permissions.js'
 
 export default function (app: Express, ctx: AppContext) {
-  app.post('/xrpc/org.groupds.member.add', xrpcHandler(ctx, async (req, res, { callerDid, groupDid }) => {
+  app.post('/xrpc/app.certified.group.member.add', xrpcHandler(ctx, async (req, res, { callerDid, groupDid }) => {
     const { memberDid, role } = req.body
 
     // Validate inputs before any async work

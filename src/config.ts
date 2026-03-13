@@ -19,6 +19,16 @@ let cachedConfig: Config | undefined
 
 export function loadConfig(): Config {
   if (cachedConfig) return cachedConfig
-  cachedConfig = configSchema.parse(process.env)
+  const env = process.env
+  cachedConfig = configSchema.parse({
+    port: env.PORT,
+    publicHostname: env.PUBLIC_HOSTNAME,
+    dataDir: env.DATA_DIR,
+    encryptionKey: env.ENCRYPTION_KEY,
+    plcUrl: env.PLC_URL,
+    didCacheTtlMs: env.DID_CACHE_TTL_MS,
+    maxBlobSize: env.MAX_BLOB_SIZE,
+    logLevel: env.LOG_LEVEL,
+  })
   return cachedConfig
 }

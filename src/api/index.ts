@@ -7,6 +7,7 @@ import createRecord from './repo/createRecord.js'
 import uploadBlob from './repo/uploadBlob.js'
 import auditQuery from './audit/query.js'
 import memberList from './member/list.js'
+import memberAdd from './member/add.js'
 import deleteRecord from './repo/deleteRecord.js'
 
 export function registerRoutes(app: Express, ctx: AppContext): void {
@@ -15,6 +16,7 @@ export function registerRoutes(app: Express, ctx: AppContext): void {
   roleSet(app, ctx)
   memberRemove(app, ctx)
   memberList(app, ctx)
+  memberAdd(app, ctx)
   putRecord(app, ctx)
   createRecord(app, ctx)
   uploadBlob(app, ctx)

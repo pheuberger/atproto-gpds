@@ -99,11 +99,13 @@ async function main() {
   const shutdown = async () => {
     logger.info('Shutting down...')
     clearInterval(nonceCleanupInterval)
-    // Stop accepting new connections, then destroy any lingering keep-alive sockets
-    await new Promise<void>((resolve, reject) =>
+    // Stop accepting new connections and destroy lingering keep-alive sockets concurrently
+    const closeServer = new Promise<void>((resolve, reject) =>
       server.close((err) => (err ? reject(err) : resolve()))
     )
+    logger.info(`Destroying ${openSockets.size} open socket(s) to unblock server close`)
     openSockets.forEach((s) => s.destroy())
+    await closeServer
     await groupDbs.destroyAll()
     await globalDb.destroy()
     process.exit(0)

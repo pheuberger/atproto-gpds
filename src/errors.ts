@@ -1,1 +1,1 @@
-export { AuthRequiredError, ForbiddenError } from '@atproto/xrpc-server'
+export { AuthRequiredError as UnauthorizedError, ForbiddenError } from '@atproto/xrpc-server'
